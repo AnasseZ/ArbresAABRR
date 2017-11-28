@@ -2,8 +2,12 @@
 public class Main {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		System.out.println("test");
+		
+		ABRR aPrime = new ABRR();
+		AABRR a = new AABRR(aPrime, 50, 75);
+		System.out.println(a.getMax());
+		
+		FileHandler fileHander = new FileHandler("contenu");
 	}
 
 }
