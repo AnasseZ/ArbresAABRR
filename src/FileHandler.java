@@ -1,28 +1,68 @@
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.Scanner;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class FileHandler {
 	public String fileContent;
-
+	public ArrayList<String> lines;
+	public List<Map<String,String>> linesSplited;
 
 	public FileHandler(String fileName) {
 		try {
-			this.fileContent = this.getFileContent(fileName);
+			this.lines = new ArrayList<>();
+			this.fileContent = this.loadFileContent(fileName);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	public String getFileContent(String fileName) throws FileNotFoundException {
-		Scanner in = new Scanner(new FileReader(fileName));
-		StringBuilder sb = new StringBuilder();
-		while(in.hasNext()) {
-		    sb.append(in.next());
+	public String loadFileContent(String fileName) throws FileNotFoundException {
+		try {
+			File file = new File(fileName);
+			FileReader fileReader = new FileReader(file);
+			BufferedReader bufferedReader = new BufferedReader(fileReader);
+			StringBuffer stringBuffer = new StringBuffer();
+			String line;
+			
+			while ((line = bufferedReader.readLine()) != null) {
+				stringBuffer.append(line);
+				this.lines.add(line);
+				stringBuffer.append("\n");
+			}
+			fileReader.close();
+			System.out.println("Contents of file:");
+			System.out.println(stringBuffer.toString());
+			return stringBuffer.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		in.close();
 		
-		return sb.toString();
+		return "";
+	}
+
+	public ArrayList<String> getLines() {
+		return lines;
+	}
+
+	public String getFileContent() {
+		return fileContent;
+	}
+
+	public void setFileContent(String fileContent) {
+		this.fileContent = fileContent;
+	}
+	
+	public void showLines() {
+		for (Iterator iterator = lines.iterator(); iterator.hasNext();) {
+			String string = (String) iterator.next();
+			System.out.println(string);
+		}
 	}
 }
