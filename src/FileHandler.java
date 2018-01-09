@@ -8,9 +8,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Service permettant de manipuler nos fichiers
+ * càd récuperer nos arbres ainsi que les écrire dans un fichier
+ * @author anassezougarh
+ *
+ */
 public class FileHandler {
 	public String fileContent;
-	public ArrayList<String> lines;
+	public ArrayList<String> lines; /* Liste de nos lignes où chaque ligne est un ABR*/
 	public List<Map<String,String>> linesSplited;
 
 	public FileHandler(String fileName) {
@@ -23,6 +29,12 @@ public class FileHandler {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param fileName
+	 * @return contenu du fichier dans une chaîne de caractères
+	 * @throws FileNotFoundException
+	 */
 	public String loadFileContent(String fileName) throws FileNotFoundException {
 		try {
 			File file = new File(fileName);
