@@ -1,5 +1,8 @@
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * Service gérant la manipulation de nos arbres
@@ -11,7 +14,8 @@ public class TreeHandler {
 	private FileHandler fileHandler; // Notre service de gestion de fichier
 	private String fileName;
 	public final static String VALUE_SEPARATOR = ":"; // séparateur utlisé entre les valeurs
-	public int parcoursIndex = 0; // indice courant dans notre parcours d'arbre
+	public int parcoursIndex = 0; // indice courant dans notre parcours d'arbre ABRR
+	public int parcoursIndexAABRR = 0;
 	
 	// séparateur utilisé entre le max et min des ABRR et les valeurs mêmes de l'ABRR
 	public final static String TYPE_SEPARATOR = ";"; 
@@ -42,12 +46,10 @@ public class TreeHandler {
 		int max;
 		
 		ABRR aPrime = new ABRR();
-	
-		// BOUCLER AVEC l'indice de lines pour créer tout les ABRR
 		
 		String[] contentExploded = lines.get(index).split(TreeHandler.TYPE_SEPARATOR);
 		
-		// contentExploded[0] stock le min et le max
+		// contentExploded[0] stock le min et le max de l'AABRR
 		int[] range = Arrays.stream(contentExploded[0].split(TreeHandler.VALUE_SEPARATOR))
 				.mapToInt(Integer::parseInt)
 				.toArray();
@@ -61,16 +63,25 @@ public class TreeHandler {
 			.toArray();
 		
 		// ICI IL FAUT charger l'ABRR Aprime
-		aPrime = ABRRPrefixeCreation(values, values[0], Integer.MIN_VALUE, Integer.MAX_VALUE);
+		aPrime = ABRRPrefixeCreation(0, values, values[0], Integer.MIN_VALUE, Integer.MAX_VALUE);
+		
+		
 		return new AABRR(aPrime, min, max);
 	}
 	
-	public void showAABRR() {
-		
-		// On récupère les lignes venant notre fichier
+	public void showAABRR() throws FileNotFoundException, UnsupportedEncodingException {
+		// On récupère les lignes venant de notre fichier
 		ArrayList<String> lines = fileHandler.getLines();
+		AABRR a = new AABRR();
 		
-		AABRR a = this.createAABRR(lines, 0);
+		int[] values = getABRRPrefixeFromFile(lines);
+		
+		a = AABRRPrefixeCreation(lines, values, values[0], Integer.MIN_VALUE, Integer.MAX_VALUE);
+		
+		this.fileHandler.createFileFromAABRR(a, "/Users/anassezougarh/Desktop/", "fichierdeSorti.txt");
+	}
+	
+	public void showOneAABRR(AABRR a) {
 		System.out.println(
 				"Les valeurs de cet ABRR sont comprises entre " 
 				+ a.getMin()
@@ -81,6 +92,25 @@ public class TreeHandler {
 		
 		System.out.print("Arbre en préfixe: ");
 		showABRRContentPrefixe(a.getAprime());
+		System.out.println("");
+		System.out.println("**************************************");
+	}
+	
+	public int[] getABRRPrefixeFromFile(ArrayList<String> lines) {
+		
+		int[] prefixeWithMin = new int[lines.size()];
+		for (int i = 0; i < lines.size(); i++) {
+			String[] contentExploded = lines.get(i).split(TreeHandler.TYPE_SEPARATOR);
+			
+			// contentExploded[0] stock le min et le max
+			int[] range = Arrays.stream(contentExploded[0].split(TreeHandler.VALUE_SEPARATOR))
+					.mapToInt(Integer::parseInt)
+					.toArray();
+			
+			prefixeWithMin[i] = range[0];
+		}
+		
+		return prefixeWithMin;
 	}
 
     /**
@@ -92,23 +122,55 @@ public class TreeHandler {
 	 * @param index du tableau
 	 * @return
 	 */
-    public ABRR ABRRPrefixeCreation(int[] values, int data, int min, int max) {
-		if (parcoursIndex < values.length) {
-			if (values[parcoursIndex] > min && values[parcoursIndex] < max) {
+    public ABRR ABRRPrefixeCreation(int pIndex, int[] values, int data, int min, int max) {
+		if (pIndex < values.length) {
+			if (values[pIndex] >= min && values[pIndex] <= max) {
+				//System.out.println("test" + pIndex);
 				ABRR root = new ABRR();
 				root.setValue(data);
-				parcoursIndex++;
-				if (parcoursIndex < values.length) {
+				pIndex++;
+				if (pIndex < values.length) {
+					//System.out.println("testnum2 " + pIndex);
 					// On créé notre sag avec des valeurs entre celle courante et la maximum
-					root.sag = ABRRPrefixeCreation(values, values[parcoursIndex], data, max);
+					root.sag = ABRRPrefixeCreation(pIndex, values, values[pIndex], data, max);
 					// On créé notre sad avec des valeurs entre le minimum et celle courante
-					root.sad = ABRRPrefixeCreation(values, values[parcoursIndex], min, data);	
+					root.sad = ABRRPrefixeCreation(pIndex, values, values[pIndex], min, data);	
 				}
 				return root;
 			}
 		}
+		
 		return null;
 	}
+    
+    public AABRR AABRRPrefixeCreation(ArrayList<String> lines, int[] values, int data, int min, int max) {
+    		//parcoursIndex = 0;
+    		if (parcoursIndexAABRR < values.length) {
+			if (values[parcoursIndexAABRR] > min && values[parcoursIndexAABRR] < max) {
+				AABRR root = this.createAABRR(lines, parcoursIndexAABRR);
+				System.out.println(
+						"index AA: "
+						+ parcoursIndexAABRR 
+						+ " / index A " 
+						+ parcoursIndex
+					);
+				showOneAABRR(root);
+				parcoursIndexAABRR++;
+				System.out.println("");
+				if (parcoursIndexAABRR < values.length) {
+
+					// On créé notre sag avec des valeurs entre celle courante et la maximum
+					root.sag = AABRRPrefixeCreation(lines, values, values[parcoursIndexAABRR], min, data);
+					
+					// On créé notre sad avec des valeurs entre le minimum et celle courante
+					root.sad = AABRRPrefixeCreation(lines, values, values[parcoursIndexAABRR], data, max);	
+				}
+				
+				return root;
+			}
+		}
+		return null;
+    }
     
     /**
      * Question 3
@@ -144,8 +206,6 @@ public class TreeHandler {
     }
     
     public void AABRRAleatoire(int min, int p, int q, int abrrCreatead) {
-    		
-    		
 	    	AABRRAleatoire(min,  p,  q, abrrCreatead + 1);
 	    	AABRRAleatoire(min,  p,  q, abrrCreatead + 1);
     }

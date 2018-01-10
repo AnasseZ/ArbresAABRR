@@ -3,6 +3,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -71,10 +73,110 @@ public class FileHandler {
 		this.fileContent = fileContent;
 	}
 	
-	public void showLines() {
-		for (Iterator iterator = lines.iterator(); iterator.hasNext();) {
+	/**
+	 * Question 2 : Création d'un fichier représentant un AABRR
+	 * @param root la racine de notre arbre
+	 * @param fileName nom du fichier entré par l'utilisateur
+	 * @throws UnsupportedEncodingException 
+	 * @throws FileNotFoundException 
+	 */
+	public void createFileFromAABRR(
+			AABRR root,
+			String path,
+			String fileName
+	) throws FileNotFoundException, UnsupportedEncodingException 
+	{
+		// Comme pour notre fichier de base on stock ses lignes dans une arraylist
+		ArrayList<String> lines = new ArrayList<String>();
+		
+		traversalAABRRPrefixe(root, lines);
+		
+		File file = new File(path + fileName);
+		file.getParentFile().mkdirs();
+		
+		PrintWriter writer = new PrintWriter(file);
+		
+		for (Iterator<String> iterator = lines.iterator(); iterator.hasNext();) {
 			String string = (String) iterator.next();
-			System.out.println(string);
+			// On écrit dans le fichier
+			writer.println(string);
 		}
+		
+		System.out.println("Fichier créé !");
+		writer.close();
+		
+	}
+	
+	/**
+	 * Renvoi une chaine de caractères représentant l'AABRR complet
+	 * @param root
+	 * @return
+	 */
+	public String getOneAABRRLine(AABRR root) {
+		String content = root.getMin() + ":" + root.getMax() + ";";
+		
+		return content + getABRRLine(root.getAprime());
+	}
+	
+	/**
+	 * Renvoi une chaine de caractères représentant uniquement le sous arbre A' d'un AABRR
+	 * @param root
+	 * @return
+	 */
+	public String getABRRLine(ABRR root) {
+		ArrayList<Integer> lines = new ArrayList<Integer>();
+		traversalABRRPrefixe(root,lines);
+		
+		String content = "";
+		
+		for (int i = 0; i < lines.size(); i++) {
+			content += lines.get(i);
+			
+			if(i != (lines.size() - 1)) {
+				content += ":";
+			}
+		}
+		
+		return content;
+	}
+	
+	/**
+	 * Parcours prefixe de l'AABRR
+	 * 
+	 * @param root racine de notre AABRR
+	 * @param lines on stock dans notre liste de lines  une ligne par AABRR
+	 * @return
+	 */
+	public ArrayList<String> traversalAABRRPrefixe(AABRR root, ArrayList<String> lines) {
+		lines.add((getOneAABRRLine(root)));
+		
+		if(root.getSag() != null) {
+			traversalAABRRPrefixe(root.getSag(), lines);
+		}
+		if(root.getSad() != null) {
+			traversalAABRRPrefixe(root.getSad(), lines);
+		}
+		
+		return lines;
+	}
+	
+	/**
+	 *  Parcours prefixe du sous arbre A' 
+	 *  
+	 * @param root racine du sous arbre A'
+	 * @param lines on stock les valeurs de notre sous arbre
+	 * @return
+	 */
+	public ArrayList<Integer> traversalABRRPrefixe(ABRR root, ArrayList<Integer> lines) {
+		lines.add((root.getValue()));
+		
+		if(root.getSag() != null) {
+			traversalABRRPrefixe(root.getSag(), lines);
+		}
+		if(root.getSad() != null) {
+			traversalABRRPrefixe(root.getSad(), lines);
+		}
+		
+		return lines;
 	}
 }

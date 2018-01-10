@@ -1,7 +1,7 @@
 
 public class AABRR {
-	private AABRR sag;
-	private AABRR sad;
+	public AABRR sag;
+	public AABRR sad;
 	private ABRR Aprime;
 	private int min;
 	private int max;
@@ -11,6 +11,10 @@ public class AABRR {
 		Aprime = aprime;
 		this.min = min;
 		this.max = max;
+	}
+	
+	public AABRR() {
+		
 	}
 	
 	public AABRR getSag() {
