@@ -219,9 +219,9 @@ public class TreeHandler {
     }
     
     /**
-     * 
+     *  Question 4 Générer un AABRR aléatoirement
      * @param p le nombre d'aabrr choisis par l'utilisateur 
-     * @param q la valeur max 
+     * @param q la valeur max  de tout l'arbre
      */
     public void generateAABRRAleatoire(int p, int q) {
     	
@@ -230,5 +230,119 @@ public class TreeHandler {
     public void AABRRAleatoire(int min, int p, int q, int abrrCreatead) {
 	    	AABRRAleatoire(min,  p,  q, abrrCreatead + 1);
 	    	AABRRAleatoire(min,  p,  q, abrrCreatead + 1);
+    }
+    
+    /**
+     * Question 5 - Vérification de la validité d'un AABRR
+     * On descend jusqu'aux feuilles en testant la validité
+     * Notre expression est un suite de && et non || car on pourrait
+     * Avoir une trace jusqu'à une feuille valide mais tout le reste faux
+     * 
+     * 
+     * @param root la racine de notre AABRR
+     * @return 
+     */
+    public boolean AABRRVerification(AABRR root) {
+    		
+    		// Condition d'arrêt
+    		if (root == null) {
+    			return true;
+    		}
+    		
+    		// 1 ère Vérification du caractère disjoints de nos ABR
+    		if ((root.getSag() != null) && (root.getSag().getMax() >= root.getMin())) {
+    			return false;
+    		}
+    			
+    		if ((root.getSad() != null) && (root.getSad().getMin() <= root.getMax())) {
+    			return false;
+    		}
+    		
+    		// Vérifie la validité des valeurs des fils gauche et droit
+    		if ((root.getSag() != null) && (root.getSag().getMin() > root.getMin())) {
+    			return false;
+    		}
+    			
+    		if ((root.getSad() != null) && (root.getSad().getMax() < root.getMax())) {
+    			return false;
+    		}
+    			
+    		
+    		// Appel de la vérification de l'ABRR
+    		if(!isABRRValide(root.getAprime(),root.getMin(), root.getMax())) {
+    			return false;
+    		}
+    			
+    		return (
+    				AABRRVerification(root.getSag()) 
+    				&& AABRRVerification(root.getSad())
+    				);
+    	
+    }
+    
+    /**
+     * Question 5 - partie 2
+     * Vérification d'un ABRR
+     * Même principe qu'au dessus sauf que nous travaillons sur un ABRR
+     * Donc la valeur du fils de droite est inférieur et à gauche supérieur
+     * 
+     * @param root racine de notre ABRR
+     * @param minimium obtenu par l'information détenu par son AABRR
+     * @param maximum obtenu par l'information détenu par son AABRR
+     * @return
+     */
+    public boolean ABRRVerification(ABRR root, int minimium, int maximum) {
+    		// Condition d'arrêt
+		if (root == null) {
+			return true;
+		}
+		
+		// On vérifie que les bornes soient respectées
+		if (root.getValue() < minimium || root.getValue() > maximum) {
+			return false;
+		}
+		
+		// On vérifie que si il y'a un fils gauche renvoie false si il est strictement inférieur
+		if ((root.sag != null) && (root.sag.getValue() < root.getValue())) {
+			return false;
+		}
+			
+		// Pareil pour le droit avec la négation de la véritable expression de validité 
+		if ((root.sad != null) && (root.sad.getValue() > root.getValue())) {
+			return false;
+		}
+		
+		return (ABRRVerification(root.getSag(), minimium, maximum) 
+				&& ABRRVerification(root.sad, minimium, maximum)
+				);
+    }
+    
+    /**
+     * Appelle la vérification ABRR
+     * @param root
+     * @param minimium
+     * @param maximum
+     * @return vrai si valide, faux sinon
+     */
+    public boolean isABRRValide(ABRR root, int minimium, int maximum) {
+    		return ABRRVerification(root, minimium, maximum);
+    }
+    
+    /**
+     * Appelle la vérification AABRR
+     * @param 
+     */
+    public void isAABRRValide() {
+    		if (currentWorkingAABRR == null) {
+			System.out.println("Impossible. Veuillez charger l'AABRR en faisant 1) avant.");
+		} else {
+			 boolean res = AABRRVerification(currentWorkingAABRR);
+			 
+			 if(res == true) {
+				 System.out.println("L'arbre est valide ! ");
+			 } else {
+				 System.out.println("L'abre est incorrecte.");
+			 }
+		}
     }
 }
