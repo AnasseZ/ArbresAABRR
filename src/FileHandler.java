@@ -51,7 +51,8 @@ public class FileHandler {
 				stringBuffer.append("\n");
 			}
 			fileReader.close();
-			System.out.println("Contents of file:");
+			System.out.println("Contenu du fichier de base:");
+			System.out.println("");
 			System.out.println(stringBuffer.toString());
 			return stringBuffer.toString();
 		} catch (IOException e) {

@@ -2,7 +2,7 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.Scanner;
 
 /**
  * Service gérant la manipulation de nos arbres
@@ -16,6 +16,7 @@ public class TreeHandler {
 	public final static String VALUE_SEPARATOR = ":"; // séparateur utlisé entre les valeurs
 	public int parcoursIndex = 0; // indice courant dans notre parcours d'arbre ABRR
 	public int parcoursIndexAABRR = 0;
+	public AABRR currentWorkingAABRR = null;
 	
 	// séparateur utilisé entre le max et min des ABRR et les valeurs mêmes de l'ABRR
 	public final static String TYPE_SEPARATOR = ";"; 
@@ -69,7 +70,7 @@ public class TreeHandler {
 		return new AABRR(aPrime, min, max);
 	}
 	
-	public void showAABRR() throws FileNotFoundException, UnsupportedEncodingException {
+	public void showAABRR() {
 		// On récupère les lignes venant de notre fichier
 		ArrayList<String> lines = fileHandler.getLines();
 		AABRR a = new AABRR();
@@ -77,10 +78,31 @@ public class TreeHandler {
 		int[] values = getABRRPrefixeFromFile(lines);
 		
 		a = AABRRPrefixeCreation(lines, values, values[0], Integer.MIN_VALUE, Integer.MAX_VALUE);
-		
-		this.fileHandler.createFileFromAABRR(a, "/Users/anassezougarh/Desktop/", "fichierdeSorti.txt");
+		currentWorkingAABRR = a;
+		parcoursIndexAABRR = 0;
 	}
 	
+	public void printAABRRonFile(Scanner reader) throws FileNotFoundException, UnsupportedEncodingException {
+		if (currentWorkingAABRR == null) {
+			System.out.println("Impossible. Veuillez charger l'AABRR en faisant 1) avant.");
+		} else {
+			System.out.println("Entrez le nom du fichier");
+			String fileName = reader.nextLine();
+			System.out.println("Entrez le chemin");
+			String path = reader.nextLine();
+			
+			this.fileHandler.createFileFromAABRR(currentWorkingAABRR, path, fileName);
+			//this.fileHandler.createFileFromAABRR(currentWorkingAABRR, "/Users/anassezougarh/Desktop/", "fichierdeSorti.txt");
+		}
+	}
+	
+	/**
+     * Question 3
+     * Affiche notre AABRR avec pour chaque AABRR sa range de valeurs et les valeurs de son ABRR
+     * Complexité ?
+     * 
+     * @param root
+     */
 	public void showOneAABRR(AABRR a) {
 		System.out.println(
 				"Les valeurs de cet ABRR sont comprises entre " 
@@ -173,7 +195,7 @@ public class TreeHandler {
     }
     
     /**
-     * Question 3
+     * Question 3 - sous partie 
      * Affiche notre arbre de manière prefixe 
      * Complexité 0(n)
      * 
