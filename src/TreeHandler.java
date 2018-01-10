@@ -170,12 +170,12 @@ public class TreeHandler {
     		if (parcoursIndexAABRR < values.length) {
 			if (values[parcoursIndexAABRR] > min && values[parcoursIndexAABRR] < max) {
 				AABRR root = this.createAABRR(lines, parcoursIndexAABRR);
-				System.out.println(
+				/*System.out.println(
 						"index AA: "
 						+ parcoursIndexAABRR 
 						+ " / index A " 
 						+ parcoursIndex
-					);
+					); */
 				showOneAABRR(root);
 				parcoursIndexAABRR++;
 				System.out.println("");
@@ -343,6 +343,105 @@ public class TreeHandler {
 			 } else {
 				 System.out.println("L'abre est incorrecte.");
 			 }
+		}
+    }
+    
+    /**
+     * Question 6 : Rechercher une valeur dans l'AABRR
+     *  Le but est d'afficher l'intervalle de valeur de celle qu'on recherche
+     *  Si elle est bien évidemment disponible
+     *  
+     *  On se déplace dans l'AABRR en comparant les intervalles
+     *  Si un intervalle est trouvé on rentre dans l'ABR A' et si la
+     *  valeur est présente on affiche l'intervalle.
+     * 
+     * @param value
+     */
+    public void findValueinAABRR(int value) {
+    		
+    	if (currentWorkingAABRR == null) {
+			System.out.println("Impossible. Veuillez charger l'AABRR en faisant 1) avant.");
+		} else {
+			AABRR aabrrFound = findInterval(currentWorkingAABRR, value);
+    		
+			if(aabrrFound == null) {
+				System.out.println(value + " ne fait pas parti de l'AABRR !");
+			} else {
+				if(findValueinABRR(aabrrFound.getAprime(), value) == null) {
+					System.out.println(
+							"Intervalle " 
+							+ aabrrFound.getMin() + " - " + aabrrFound.getMax()
+							+ " a été trouvé mais la valeur "
+							+ value
+							+ " n'existe pas."
+					); 
+				} else {
+					System.out.println(
+							value 
+							+" fait parti de notre intervalle "
+							+ aabrrFound.getMin() + " - " + aabrrFound.getMax()
+					); 
+				}
+			}
+		}
+    }
+    
+    /**
+     * Question 6 - sous méthode
+     * Recherche un intervalle valide
+     * @param root
+     * @param value
+     * @return l'aabrr de l'intervalle si trouvé ou  null sinon
+     */
+    	public AABRR findInterval(AABRR root, int value) {
+    		
+    		if(root.getMin() <= value && root.getMax() >= value) {
+    			// Intervalle trouvé, on renvoi l'arbre AABRR associé
+    			return root;
+    		} 
+    		
+    		if (root.getMax() < value) {
+    			// La valeur est plus grande que l'intervalle actuel donc on se déplace chez le fils droit
+    			if(root.getSad() != null) {
+    				return findInterval(root.getSad(), value);
+    			}
+    			// Pas de sous arbre à visiter
+    			return null;	
+    		} 
+    		
+    		// On va au fils gauche si il y'en a un 
+		if(root.getSag() != null) {
+			return findInterval(root.getSag(), value);
+		}
+		
+		// Pas de sous arbre à visiter on renvoi null donc
+		return null;
+    	}
+    	
+    	/**
+    	 * Question 6 - sous méthode
+    	 * L'intervalle existe on cherche l'existence de la valeur
+    	 *  Méthode récursive donc on return des abrr pour le parcours
+    	 * @param root
+    	 * @param value
+    	 * @return l'abrr si trouvé sinon null
+    	 */
+    	public ABRR findValueinABRR(ABRR root, int value) {
+    		
+    		// Condition d'arrêt
+    		if(root == null) {
+    			return null;
+    		}
+    		
+    		if(root.getValue() == value) {		
+			return root;
+		} 
+    		
+    		if(root.getValue() > value) {
+    			// La valeur recherchée est plus petite que celle actuelle, on se déplace à droite
+			return findValueinABRR(root.getSad(), value);
+		} else {
+			return findValueinABRR(root.getSag(), value);
 		}
     }
 }

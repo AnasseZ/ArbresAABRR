@@ -38,6 +38,11 @@ public class Main {
 					treeHandler.showAABRR();
 					treeHandler.isAABRRValide();
 					break;
+				case 6:
+					System.out.println("Entrez la valeur à rechercher");
+					int mystere = reader.nextInt();
+					treeHandler.findValueinAABRR(mystere);
+					reader.nextLine(); 
 				case -1:
 					stop = true;
 				default:
@@ -66,5 +71,6 @@ public class Main {
 		System.out.println("2 : Ecrire un fichier depuis l'AABRR du fichier de base (Q2)");
 		System.out.println("4 : Générer un arbre aléatoirement (Q4)");
 		System.out.println("5 : Vérifier la validité d'un arbre contenu dans un fichier (Q5)");
+		System.out.println("6 : Recherche une valeur dans le dernier AABRR chargé (Q6)");
 	}
 }
