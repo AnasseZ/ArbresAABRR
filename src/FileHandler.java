@@ -7,8 +7,6 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Service permettant de manipuler nos fichiers
@@ -19,7 +17,7 @@ import java.util.Map;
 public class FileHandler {
 	public String fileContent;
 	public ArrayList<String> lines; /* Liste de nos lignes où chaque ligne est un ABR*/
-	public List<Map<String,String>> linesSplited;
+
 
 	public FileHandler(String fileName) {
 		try {
@@ -163,6 +161,8 @@ public class FileHandler {
 	
 	/**
 	 *  Parcours prefixe du sous arbre A' 
+	 *  Nous avons préferer ajouter à un tableau et non concaténer directement
+	 *  Afin de réutiliser la méthode ailleurs plutard.
 	 *  
 	 * @param root racine du sous arbre A'
 	 * @param lines on stock les valeurs de notre sous arbre

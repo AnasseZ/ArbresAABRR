@@ -18,6 +18,8 @@ public class TreeHandler {
 	public int parcoursIndexAABRR = 0;
 	public AABRR currentWorkingAABRR = null;
 	
+	public boolean debug = false;
+	
 	// séparateur utilisé entre le max et min des ABRR et les valeurs mêmes de l'ABRR
 	public final static String TYPE_SEPARATOR = ";"; 
 	
@@ -98,8 +100,8 @@ public class TreeHandler {
 	
 	/**
      * Question 3
-     * Affiche notre AABRR avec pour chaque AABRR sa range de valeurs et les valeurs de son ABRR
-     * Complexité ?
+     * Affiche un AABRR avec sa range de valeurs et les valeurs de son ABRR
+     * Complexité m
      * 
      * @param root
      */
@@ -164,7 +166,15 @@ public class TreeHandler {
 		
 		return null;
 	}
-    
+    /**
+     * Question 1 - seconde partie
+     * @param lines notre liste de lines qu'on récupère depuis le fichier
+     * @param values les valeurs du parcours préfixe sur l'information Min des AABRR
+     * @param data la valeur actuelle à l'indice courant du parcours de notre parcours préfixe
+     * @param min
+     * @param max
+     * @return
+     */
     public AABRR AABRRPrefixeCreation(ArrayList<String> lines, int[] values, int data, int min, int max) {
     		//parcoursIndex = 0;
     		if (parcoursIndexAABRR < values.length) {
@@ -196,26 +206,88 @@ public class TreeHandler {
     
     /**
      * Question 3 - sous partie 
-     * Affiche notre arbre de manière prefixe 
-     * Complexité 0(n)
+     * Affiche un ABRR de manière prefixe 
+     * Complexité 0(m)
      * 
      * @param root
      */
     public void showABRRContentPrefixe(ABRR root)
     {
         if (root != null) {
-            System.out.print(root.getValue() + " ");
-            /*
-            System.out.println(
-            		root.getValue()
-            		+ " a pour fils gauche "
-            		+ root.getSag().getValue()
-            		+ " et a pour fils droit "
-            		+ root.getSad().getValue()
-            		); */
+        	
+        		if (!debug){
+                System.out.print(root.getValue() + " ");
+        		} else {
+        			if (root.getSag() != null && root.getSad() != null) {
+                		System.out.println("");
+                    System.out.println(
+                    		root.getValue()
+                    		+ " a pour fils gauche "
+                    		+ root.getSag().getValue()
+                    		+ " et a pour fils droit "
+                    		+ root.getSad().getValue()
+                    		);
+                }
+                
+                if (root.getSag() != null && root.getSad() == null) {
+                		System.out.println("");
+                		System.out.println(
+                				root.getValue()
+                				+ " a uniquement un fils gauche qui est "
+                				+ root.getSag().getValue()
+            				);
+                }
+                
+                if (root.getSag() == null && root.getSad() != null) {
+                		System.out.println("");
+                		System.out.println(
+            				root.getValue()
+            				+ " a uniquement un fils droit qui est "
+            				+ root.getSad().getValue()
+        				);
+                }
+                
+                if (root.getSag() == null && root.getSad() == null) {
+                		System.out.println("");
+            			System.out.println(
+    	    				root.getValue()
+    	    				+ " est une feuille"
+    				);
+                }
+        		}
+            
+
             showABRRContentPrefixe(root.sag);
             showABRRContentPrefixe(root.sad);
         }
+    }
+    
+    
+    
+    /**
+     * Appelle la Question 3
+     */
+    public void showPrefixeAABRRAtAnyTime() {
+	    	if (currentWorkingAABRR == null) {
+				System.out.println("Impossible. Veuillez charger l'AABRR en faisant 1) avant.");
+			} else {
+				showPrefixeAABRR(currentWorkingAABRR);
+			}
+    }
+    
+    /**
+     * Question 3 
+     * Affiche notre arbre et tous ses fils de manière prefixe 
+     * Complexité 0(n*m)
+     * 
+     * @param root
+     */
+    public void showPrefixeAABRR(AABRR root) {
+		if(root != null) {
+		 	showOneAABRR(root);
+		 	showPrefixeAABRR(root.getSag());
+		 	showPrefixeAABRR(root.getSad());
+		}
     }
     
     /**
@@ -444,4 +516,60 @@ public class TreeHandler {
 			return findValueinABRR(root.getSag(), value);
 		}
     }
+    	
+    	/**
+    	 * Question 7 : Insérer une valeur
+
+    	 * @param value à insérer
+    	 */
+    	public void insertValue(int value) {
+    		
+    		if (currentWorkingAABRR == null) {
+    			System.out.println("Impossible. Veuillez charger l'AABRR en faisant 1) avant.");
+    		} else {
+    			AABRR aabrrFound = findInterval(currentWorkingAABRR, value);
+        		
+    			if(aabrrFound == null) {
+    				System.out.println(" Aucun intervalle disponible pour insérer " + value);
+    			} else {
+    				
+    				ajoutDansABRR(aabrrFound.getAprime(), value);
+    				System.out.println(value + " est insérer dans l'intervalle "
+	    				+ aabrrFound.getMin() 
+	    				+ "-"
+	    				+ aabrrFound.getMax()
+    				);
+    			}
+    		}
+    	}
+    	
+    	/**
+    	 *  Question 7 : partie 2
+    	 *  L'intervalle est trouvé on insérère la valeur
+    	 * @param root
+    	 * @param value
+    	 */
+    	public void ajoutDansABRR(ABRR root, int value) {
+    		// On se déplace à gauche car la valeur qu'on veut insérer est supérieur à celle du noeud
+    		if(root.getValue() < value) {
+    			
+    			// On se déplace à droite
+    			if(root.getSad() == null) {
+    				ABRR newABRR = new ABRR();
+    				newABRR.setValue(value);
+    				root.setSad(newABRR);
+    			} else {
+    				ajoutDansABRR(root.getSad(), value);
+    			} 			
+    		} else {
+    			if(root.getSag() == null) {
+    				// On peut créer une feuille car le noeud n'a pas de fils gauche
+    				ABRR newABRR = new ABRR();
+    				newABRR.setValue(value);
+    				root.setSag(newABRR);
+    			} else {
+    				ajoutDansABRR(root.getSag(), value);
+    			}
+    		}
+    	}
 }

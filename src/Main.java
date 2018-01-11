@@ -16,6 +16,16 @@ public class Main {
 			int choice = reader.nextInt();
 			reader.nextLine(); // pour vider le scanner
 			switch (choice) {
+				case 0:
+					
+					System.out.println("Activer l'affichage de débug? 1 pour Oui O pour Non");
+					int debugChoice = reader.nextInt();
+					reader.nextLine(); // pour vider le scanner
+					
+					if( debugChoice == 1) treeHandler.debug = true;
+					treeHandler.showPrefixeAABRRAtAnyTime();
+					treeHandler.debug = false;
+					break;
 				case 1:
 					treeHandler.showAABRR();
 					break;
@@ -42,7 +52,16 @@ public class Main {
 					System.out.println("Entrez la valeur à rechercher");
 					int mystere = reader.nextInt();
 					treeHandler.findValueinAABRR(mystere);
-					reader.nextLine(); 
+					reader.nextLine();
+					break;
+				case 7:
+					System.out.println("Entrez la valeur à insérer");
+					int mystere2 = reader.nextInt();
+					treeHandler.insertValue(mystere2);
+					reader.nextLine();
+					
+					treeHandler.showPrefixeAABRRAtAnyTime();
+					break;
 				case -1:
 					stop = true;
 				default:
@@ -66,11 +85,13 @@ public class Main {
 		System.out.println(" MENU - Entrez le numéro de la question voulue");
 		System.out.println("************************************************");
 		System.out.println("-1: Pour QUITTER.");
+		System.out.println("0 : Affiche le dernier AABRR chargé (Q3)");
 		System.out.println("1 : Charger l'AABRR du fichier de base et l'afficher (Q1 + Q3)");
 		System.out.println("3 : Charger l'AABRR d'un fichier donné et l'afficher (Q1 + Q3)");
 		System.out.println("2 : Ecrire un fichier depuis l'AABRR du fichier de base (Q2)");
 		System.out.println("4 : Générer un arbre aléatoirement (Q4)");
 		System.out.println("5 : Vérifier la validité d'un arbre contenu dans un fichier (Q5)");
 		System.out.println("6 : Recherche une valeur dans le dernier AABRR chargé (Q6)");
+		System.out.println("7 : Insérer une valeur dans le dernier AABRR chargé (Q7)");
 	}
 }
