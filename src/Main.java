@@ -62,6 +62,9 @@ public class Main {
 					
 					treeHandler.showPrefixeAABRRAtAnyTime();
 					break;
+				case 10:
+					treeHandler.AABRRToABR();
+					break;
 				case -1:
 					stop = true;
 				default:
@@ -93,5 +96,6 @@ public class Main {
 		System.out.println("5 : Vérifier la validité d'un arbre contenu dans un fichier (Q5)");
 		System.out.println("6 : Recherche une valeur dans le dernier AABRR chargé (Q6)");
 		System.out.println("7 : Insérer une valeur dans le dernier AABRR chargé (Q7)");
+		System.out.println("10: AABRR -> ABR avec parcours préfixe et infixe obtenus (Q10)");
 	}
 }

@@ -17,6 +17,7 @@ public class TreeHandler {
 	public int parcoursIndex = 0; // indice courant dans notre parcours d'arbre ABRR
 	public int parcoursIndexAABRR = 0;
 	public AABRR currentWorkingAABRR = null;
+	public ABRR abr = null;
 	
 	public boolean debug = false;
 	
@@ -413,7 +414,7 @@ public class TreeHandler {
 			 if(res == true) {
 				 System.out.println("L'arbre est valide ! ");
 			 } else {
-				 System.out.println("L'abre est incorrecte.");
+				 System.out.println("L'arbre est incorrect.");
 			 }
 		}
     }
@@ -518,7 +519,7 @@ public class TreeHandler {
     }
     	
     	/**
-    	 * Question 7 : Insérer une valeur
+    	 * Question 8 : Insérer une valeur
 
     	 * @param value à insérer
     	 */
@@ -544,7 +545,7 @@ public class TreeHandler {
     	}
     	
     	/**
-    	 *  Question 7 : partie 2
+    	 *  Question 8 : partie 2
     	 *  L'intervalle est trouvé on insérère la valeur
     	 * @param root
     	 * @param value
@@ -572,4 +573,103 @@ public class TreeHandler {
     			}
     		}
     	}
+    	
+    	/**
+    	 * Question 10
+    	 * 
+    	 * le dernier AABRR chargé vers un ABR classique valide
+    	 * 
+    	 *  L'Appellant 
+    	 */
+    	public void AABRRToABR() {
+    		if (currentWorkingAABRR == null) {
+    			System.out.println("Impossible. Veuillez charger l'AABRR en faisant 1) avant.");
+    		} else {
+    			abr = null; 		
+        		generateABR(currentWorkingAABRR);
+        		System.out.println("Parcours préfixe :");
+        		showABRRContentPrefixe(abr);
+        		System.out.println("");
+        		System.out.println("Parcours infixe");
+        		showABRRContentInfixe(abr);
+        		System.out.println("");
+    		} 		
+    	}
+    	
+    	/**
+    	 * Question 10 - partie 2
+    	 * De manière préfixe on va visiter chacun des AABRR en visitant leurs A'
+    	 *  afin d'ajouter les valeurs à l'ABR en sortie
+    	 * @param currentWorkingAABRR
+    	 */
+    	public void generateABR(AABRR currentWorkingAABRR) {
+    		if (currentWorkingAABRR != null) {
+    			// ACTION
+    			ABRRPrefixeForABRGeneration(currentWorkingAABRR.getAprime());
+    			
+    			// VISITE SAG ET SAD
+    			generateABR(currentWorkingAABRR.getSag());
+    			generateABR(currentWorkingAABRR.getSad());
+    		}
+    	}
+    	
+    	/**
+    	 *  Question 10 - Parcours préfixe d' A'
+    	 *  L'action consiste à ajouter la valeur courante à notre ABR en sortie
+    	 * @param root
+    	 */
+    	public void ABRRPrefixeForABRGeneration(ABRR root) {
+    		if (root != null) {
+    			
+    			fillABR(abr, root.getValue());
+    			ABRRPrefixeForABRGeneration(root.getSag());
+    			ABRRPrefixeForABRGeneration(root.getSad());
+    		}
+    	}
+    	
+    	/**
+    	 * Question 10
+    	 *  Association de la valeur au bon endroit pour notre ABR
+    	 * @param root
+    	 * @param lastValueVisited
+    	 */
+    	public void fillABR(ABRR root, int lastValueVisited) {
+    		if(root != null){	
+    			if(root.getValue() >= lastValueVisited ) {
+    				if(root.getSag() != null) {
+    					fillABR(root.getSag(), lastValueVisited);		
+    				} else {
+    					ABRR temp = new ABRR();
+    					temp.setValue(lastValueVisited);
+    					root.setSag(temp);
+    				}
+   			} else {  				
+    				if(root.getSad() != null) {
+    					fillABR(root.getSad(), lastValueVisited);		
+    				} else {
+    					ABRR temp = new ABRR();
+    					temp.setValue(lastValueVisited);
+    					root.setSad(temp);
+    				}
+    			}
+    		} else {
+    			abr = new ABRR();
+    			abr.setValue(lastValueVisited);
+    		}
+    	}
+    	
+    	/**
+    	 * 
+    	 * Affichage infixe d'un ABRR.
+    	 * Complexité : 0(n) ( via cours )
+    	 * @param root
+    	 */
+    	public void showABRRContentInfixe(ABRR root)
+        {
+            if (root != null) {
+            		showABRRContentInfixe(root.sag);
+                System.out.print(root.getValue() + " ");
+                showABRRContentInfixe(root.sad);
+            }
+        }
 }
