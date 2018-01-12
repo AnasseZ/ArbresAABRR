@@ -157,9 +157,9 @@ public class TreeHandler {
 				if (pIndex < values.length) {
 					//System.out.println("testnum2 " + pIndex);
 					// On créé notre sag avec des valeurs entre celle courante et la maximum
-					root.sag = ABRRPrefixeCreation(pIndex, values, values[pIndex], data, max);
+					root.sag = ABRRPrefixeCreation(pIndex, values, values[pIndex], values[0], Integer.MAX_VALUE);
 					// On créé notre sad avec des valeurs entre le minimum et celle courante
-					root.sad = ABRRPrefixeCreation(pIndex, values, values[pIndex], min, data);	
+					root.sad = ABRRPrefixeCreation(pIndex, values, values[pIndex], Integer.MIN_VALUE, values[0]);	
 				}
 				return root;
 			}
@@ -665,11 +665,78 @@ public class TreeHandler {
     	 * @param root
     	 */
     	public void showABRRContentInfixe(ABRR root)
-        {
+    {
             if (root != null) {
             		showABRRContentInfixe(root.sag);
                 System.out.print(root.getValue() + " ");
                 showABRRContentInfixe(root.sad);
             }
-        }
+    }
+    	
+    	/**
+    	 * Question 7 : suppression d'une valeur basée sur celle du cours
+    	 * @param value à supprimer
+    	 */
+    	public void deleteValue(int value) {
+    		if (currentWorkingAABRR == null) {
+    			System.out.println("Impossible. Veuillez charger l'AABRR en faisant 1) avant.");
+    		} else {
+    			AABRR aabrrFound = findInterval(currentWorkingAABRR, value);
+        		
+    			if(aabrrFound == null) {
+    				System.out.println(" Aucun intervalle disponible pour supprimer " + value);
+    			} else {
+    				System.out.println("Nous sommes dans l'intervalle " + aabrrFound.getMin() + " - " + aabrrFound.getMax());
+    				aabrrFound.setAprime(deleteValueABRR(aabrrFound.getAprime(), value));
+    				System.out.println("Nouveau parcours préfixe d'A'");
+    				showPrefixeAABRRAtAnyTime();
+    			}
+    		}
+    	}
+    	
+    	/**
+    	 * Question 7 sous partie
+    	 * 
+    	 * Suppression d'une valeur dans un ABR via celle du cours ( adaptée aux ABRR )
+    	 * @param root
+    	 * @param value
+    	 */
+    	public ABRR deleteValueABRR(ABRR root, int value) {
+    		if(root==null) {
+    			return null;
+    		}
+   	
+    		if(value < root.getValue()) {
+    			// on se déplace à droite
+    			root.setSad(deleteValueABRR(root.getSad(), value));
+    		} else if(value > root.getValue()) {
+    				// on se déplace à gauche
+    			root.setSag(deleteValueABRR(root.getSag(), value));
+		} else {
+			// Valeur est trouvée
+    			if(root.getSag()==null)
+    				return root.getSad();
+    			else if(root.getSad()==null)
+    				return root.getSag();
+    			root.setValue(SuppriMax(root.getSad()));
+    			root.setSad(deleteValueABRR(root.getSad(), root.getValue()));
+    			}
+    		
+    		return root;
+    	}
+    	
+    	
+    	/**
+    	 * Question 7 sous - partie 
+    	 * 
+    	 * Implémentation de SuppriMax() du cours
+    	 */
+    	public int SuppriMax(ABRR root) {
+    		int maxv = root.getValue();
+    		while(root.getSag() != null) {
+    			maxv = root.getSag().getValue();
+    			root = root.getSag();
+    		}
+    		return maxv;
+    	}
 }

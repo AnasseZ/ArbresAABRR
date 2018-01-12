@@ -2,7 +2,11 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.Scanner;
 
-
+/**
+ * Point d'entrée de l'application
+ * @author anassezougarh
+ *
+ */
 public class Main {
 
 	public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {	
@@ -55,6 +59,12 @@ public class Main {
 					reader.nextLine();
 					break;
 				case 7:
+					System.out.println("Entrez la valeur à supprimer");
+					int mystere3 = reader.nextInt();
+					treeHandler.deleteValue(mystere3);
+					reader.nextLine();
+					break;
+				case 8:
 					System.out.println("Entrez la valeur à insérer");
 					int mystere2 = reader.nextInt();
 					treeHandler.insertValue(mystere2);
@@ -95,7 +105,8 @@ public class Main {
 		System.out.println("4 : Générer un arbre aléatoirement (Q4)");
 		System.out.println("5 : Vérifier la validité d'un arbre contenu dans un fichier (Q5)");
 		System.out.println("6 : Recherche une valeur dans le dernier AABRR chargé (Q6)");
-		System.out.println("7 : Insérer une valeur dans le dernier AABRR chargé (Q7)");
+		System.out.println("7 : Supprimer une valeur dans le dernier AABRR chargé (Q7)");
+		System.out.println("8 : Insérer une valeur dans le dernier AABRR chargé (Q8)");
 		System.out.println("10: AABRR -> ABR avec parcours préfixe et infixe obtenus (Q10)");
 	}
 }
