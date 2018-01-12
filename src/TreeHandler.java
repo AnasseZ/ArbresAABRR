@@ -141,7 +141,7 @@ public class TreeHandler {
     /**
 	 * Question 1 première partie 
 	 * Creer notre ABRR récursivement selon la suite de valeurs d'une ligne, en préfixe
-	 * Complexité en 0(n)
+	 * Complexité en 0(m log m)
 	 * @param values tableau représentant notre suite de valeurs
 	 * @param root la racine de l'ABRR
 	 * @param index du tableau
@@ -600,6 +600,9 @@ public class TreeHandler {
     	 * Question 10 - partie 2
     	 * De manière préfixe on va visiter chacun des AABRR en visitant leurs A'
     	 *  afin d'ajouter les valeurs à l'ABR en sortie
+    	 *  
+    	 *  Complexité (n * m * p)
+    	 *  
     	 * @param currentWorkingAABRR
     	 */
     	public void generateABR(AABRR currentWorkingAABRR) {
@@ -616,6 +619,8 @@ public class TreeHandler {
     	/**
     	 *  Question 10 - Parcours préfixe d' A'
     	 *  L'action consiste à ajouter la valeur courante à notre ABR en sortie
+    	 *  
+    	 *  Complexité  m * ( p)) ( création depuis le sous arbre A' )
     	 * @param root
     	 */
     	public void ABRRPrefixeForABRGeneration(ABRR root) {
@@ -630,6 +635,8 @@ public class TreeHandler {
     	/**
     	 * Question 10
     	 *  Association de la valeur au bon endroit pour notre ABR
+    	 *  
+    	 *  Complexité : O(p) 
     	 * @param root
     	 * @param lastValueVisited
     	 */
